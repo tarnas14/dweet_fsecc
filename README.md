@@ -1,3 +1,11 @@
+# Tarnas notes
+
+If I wasn't this lazy I would still add:
+
+- [ ] metadata column in token to store workspaceId together with invitation token
+- [ ] authorization that checks if workspace and notes edit/delete/create actions are performed by authorized user (one who belongs to the workspace)
+- [ ] I'd fix typescript errors
+
 [![Blitz.js](https://raw.githubusercontent.com/blitz-js/art/master/github-cover-photo.png)](https://blitzjs.com)
 
 This is a [Blitz.js](https://github.com/blitz-js/blitz) app.
