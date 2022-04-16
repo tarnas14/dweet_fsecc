@@ -8,9 +8,10 @@ import { NoteForm, FORM_ERROR } from "app/notes/components/NoteForm"
 export const EditNote = () => {
   const router = useRouter()
   const noteId = useParam("noteId", "number")
+  const workspaceId = useParam("workspaceId", "number")
   const [note, { setQueryData }] = useQuery(
     getNote,
-    { id: noteId },
+    { id: noteId, workspaceId },
     {
       // This ensures the query never refreshes and overwrites the form data while the user is editing.
       staleTime: Infinity,
@@ -42,7 +43,7 @@ export const EditNote = () => {
                 ...values,
               })
               await setQueryData(updated)
-              router.push(Routes.ShowNotePage({ noteId: updated.id }))
+              router.push(Routes.ShowNotePage({ noteId: updated.id, workspaceId }))
             } catch (error: any) {
               console.error(error)
               return {
@@ -57,6 +58,8 @@ export const EditNote = () => {
 }
 
 const EditNotePage: BlitzPage = () => {
+  const workspaceId = useParam("workspaceId", "number")
+
   return (
     <div>
       <Suspense fallback={<div>Loading...</div>}>
@@ -64,7 +67,7 @@ const EditNotePage: BlitzPage = () => {
       </Suspense>
 
       <p>
-        <Link href={Routes.NotesPage()}>
+        <Link href={Routes.NotesPage({ workspaceId })}>
           <a>Notes</a>
         </Link>
       </p>

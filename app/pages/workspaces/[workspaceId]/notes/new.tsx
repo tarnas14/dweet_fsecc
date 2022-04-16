@@ -1,4 +1,4 @@
-import { Link, useRouter, useMutation, BlitzPage, Routes } from "blitz"
+import { useParam, Link, useRouter, useMutation, BlitzPage, Routes } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import createNote from "app/notes/mutations/createNote"
 import { NoteForm, FORM_ERROR } from "app/notes/components/NoteForm"
@@ -6,6 +6,7 @@ import { NoteForm, FORM_ERROR } from "app/notes/components/NoteForm"
 const NewNotePage: BlitzPage = () => {
   const router = useRouter()
   const [createNoteMutation] = useMutation(createNote)
+  const workspaceId = useParam("workspaceId", "number")
 
   return (
     <div>
@@ -20,8 +21,8 @@ const NewNotePage: BlitzPage = () => {
         // initialValues={{}}
         onSubmit={async (values) => {
           try {
-            const note = await createNoteMutation(values)
-            router.push(Routes.ShowNotePage({ noteId: note.id }))
+            const note = await createNoteMutation({ workspaceId, ...values })
+            router.push(Routes.ShowNotePage({ workspaceId, noteId: note.id }))
           } catch (error: any) {
             console.error(error)
             return {
@@ -32,7 +33,7 @@ const NewNotePage: BlitzPage = () => {
       />
 
       <p>
-        <Link href={Routes.NotesPage()}>
+        <Link href={Routes.NotesPage({ workspaceId })}>
           <a>Notes</a>
         </Link>
       </p>

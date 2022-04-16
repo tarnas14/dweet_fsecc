@@ -1,5 +1,5 @@
 import { Suspense } from "react"
-import { Head, Link, usePaginatedQuery, useRouter, BlitzPage, Routes } from "blitz"
+import { useParam, Head, Link, usePaginatedQuery, useRouter, BlitzPage, Routes } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import getNotes from "app/notes/queries/getNotes"
 
@@ -8,7 +8,10 @@ const ITEMS_PER_PAGE = 100
 export const NotesList = () => {
   const router = useRouter()
   const page = Number(router.query.page) || 0
+  const workspaceId = useParam("workspaceId", "number")
+
   const [{ notes, hasMore }] = usePaginatedQuery(getNotes, {
+    where: { workspaceId },
     orderBy: { id: "asc" },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
@@ -19,10 +22,11 @@ export const NotesList = () => {
 
   return (
     <div>
+      <h2>Notes in workspace {workspaceId}</h2>
       <ul>
         {notes.map((note) => (
           <li key={note.id}>
-            <Link href={Routes.ShowNotePage({ noteId: note.id })}>
+            <Link href={Routes.ShowNotePage({ noteId: note.id, workspaceId })}>
               <a>{note.name}</a>
             </Link>
           </li>
@@ -40,6 +44,8 @@ export const NotesList = () => {
 }
 
 const NotesPage: BlitzPage = () => {
+  const workspaceId = useParam("workspaceId", "number")
+
   return (
     <>
       <Head>
@@ -48,7 +54,12 @@ const NotesPage: BlitzPage = () => {
 
       <div>
         <p>
-          <Link href={Routes.NewNotePage()}>
+          <Link href={Routes.ShowWorkspacePage({ workspaceId })}>
+            <a>Workspace</a>
+          </Link>
+        </p>
+        <p>
+          <Link href={Routes.NewNotePage({ workspaceId })}>
             <a>Create Note</a>
           </Link>
         </p>

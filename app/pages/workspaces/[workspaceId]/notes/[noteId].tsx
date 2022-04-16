@@ -7,8 +7,9 @@ import deleteNote from "app/notes/mutations/deleteNote"
 export const Note = () => {
   const router = useRouter()
   const noteId = useParam("noteId", "number")
+  const workspaceId = useParam("workspaceId", "number")
   const [deleteNoteMutation] = useMutation(deleteNote)
-  const [note] = useQuery(getNote, { id: noteId })
+  const [note] = useQuery(getNote, { id: noteId, workspaceId })
 
   return (
     <>
@@ -20,7 +21,7 @@ export const Note = () => {
         <h1>Note {note.id}</h1>
         <pre>{JSON.stringify(note, null, 2)}</pre>
 
-        <Link href={Routes.EditNotePage({ noteId: note.id })}>
+        <Link href={Routes.EditNotePage({ noteId: note.id, workspaceId })}>
           <a>Edit</a>
         </Link>
 
@@ -28,8 +29,8 @@ export const Note = () => {
           type="button"
           onClick={async () => {
             if (window.confirm("This will be deleted")) {
-              await deleteNoteMutation({ id: note.id })
-              router.push(Routes.NotesPage())
+              await deleteNoteMutation({ id: note.id, workspaceId })
+              router.push(Routes.NotesPage({ workspaceId }))
             }
           }}
           style={{ marginLeft: "0.5rem" }}
@@ -42,10 +43,12 @@ export const Note = () => {
 }
 
 const ShowNotePage: BlitzPage = () => {
+  const workspaceId = useParam("workspaceId", "number")
+
   return (
     <div>
       <p>
-        <Link href={Routes.NotesPage()}>
+        <Link href={Routes.NotesPage({ workspaceId })}>
           <a>Notes</a>
         </Link>
       </p>
