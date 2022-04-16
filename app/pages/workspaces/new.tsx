@@ -2,9 +2,11 @@ import { Link, useRouter, useMutation, BlitzPage, Routes } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import createWorkspace from "app/workspaces/mutations/createWorkspace"
 import { WorkspaceForm, FORM_ERROR } from "app/workspaces/components/WorkspaceForm"
+import { useCurrentUser } from "app/core/hooks/useCurrentUser"
 
 const NewWorkspacePage: BlitzPage = () => {
   const router = useRouter()
+  const { id: userId, email } = useCurrentUser()
   const [createWorkspaceMutation] = useMutation(createWorkspace)
 
   return (
@@ -20,7 +22,7 @@ const NewWorkspacePage: BlitzPage = () => {
         // initialValues={{}}
         onSubmit={async (values) => {
           try {
-            const workspace = await createWorkspaceMutation(values)
+            const workspace = await createWorkspaceMutation({ userId, email, ...values })
             router.push(Routes.ShowWorkspacePage({ workspaceId: workspace.id }))
           } catch (error: any) {
             console.error(error)

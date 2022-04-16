@@ -2,13 +2,16 @@ import { Suspense } from "react"
 import { Head, Link, usePaginatedQuery, useRouter, BlitzPage, Routes } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import getWorkspaces from "app/workspaces/queries/getWorkspaces"
+import { useCurrentUser } from "app/core/hooks/useCurrentUser"
 
 const ITEMS_PER_PAGE = 100
 
 export const WorkspacesList = () => {
   const router = useRouter()
   const page = Number(router.query.page) || 0
+  const { id: userId } = useCurrentUser()
   const [{ workspaces, hasMore }] = usePaginatedQuery(getWorkspaces, {
+    where: { users: { some: { userId } } },
     orderBy: { id: "asc" },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
