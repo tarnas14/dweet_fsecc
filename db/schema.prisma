@@ -70,6 +70,7 @@ model Workspace {
   updatedAt DateTime            @updatedAt
   name      String
   users     UsersInWorkspaces[]
+  notes     Note[]
 }
 
 model UsersInWorkspaces {
@@ -81,4 +82,14 @@ model UsersInWorkspaces {
   assignedBy  String
 
   @@id([userId, workspaceId])
+}
+
+model Note {
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  name        String
+  content     String
+  workspace   Workspace @relation(fields: [workspaceId], references: id)
+  workspaceId Int
 }
